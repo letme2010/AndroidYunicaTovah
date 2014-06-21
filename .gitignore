@@ -2,5 +2,4 @@
 server/libProject/bin/*
 *.nw
 *.class
-
 server/sample/bin/*
