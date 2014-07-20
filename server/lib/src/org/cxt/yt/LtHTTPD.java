@@ -10,8 +10,6 @@ import android.graphics.Bitmap.CompressFormat;
 
 public class LtHTTPD extends NanoHTTPD {
 
-	public static final String INDEX_HTML = "android_view_firebug_index.html";
-
 	public interface IDelegate {
 
 		String getResourceTextByName(String aResName);
