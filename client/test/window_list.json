@@ -1,0 +1,9 @@
+{
+	"ok": true,
+	"data": [
+		{"id": 0, "name": "com.UCMobile", "focus": true},
+		{"id": 1, "name": "com", "focus": false},
+		{"id": 2, "name": "com.UCMobile.inner", "focus": false},
+		{"id": 3, "name": "com.UCMobile.act", "focus": false}
+	]
+}
