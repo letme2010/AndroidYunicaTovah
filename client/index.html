@@ -1,5 +1,82 @@
 <html>
 	<head>
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript">
+
+		function getWindowSelect() {
+			return $('#window_select');
+		}
+
+		try{
+
+			var LT = {
+				i: function(aObj) {
+					console.log(aObj);
+				},
+				e: function(aObj) {
+					console.error(aObj);
+				},
+				request: function(aURL, aCallback) {
+					$.post(aURL, aCallback);
+				}
+			};
+
+			LT.i("welcome !!!");
+	
+			var gCurrentWindowIndex = -1;
+			var gWindowList = null;
+
+			function setCurrentIndex(aIndex) {
+				if (gCurrentWindowIndex == aIndex) {
+					return;
+				}
+				gCurrentWindowIndex = aIndex;
+				onCurrentWindowIndexchanged();
+			}
+
+			function onCurrentWindowIndexchanged() {
+				getWindowSelect().empty();
+				for (var i in gWindowList) {
+					var obj = gWindowList[i];
+					var _qOption = $("<option value='"+i+"'>"+obj.name+"</option>");
+					if (obj.focus) {
+						//TODO:这里应该弄个select window的方法，在方法里请求此窗口的view tree.
+						_qOption.attr('selected', true);
+					}
+					getWindowSelect().append(_qOption);
+				}
+			}
+
+			LT.request("./test/window_list.json", function(aData){
+
+				var json =  eval("(" + aData + ")");
+
+				LT.i("json:" + json.ok);
+				if (json.ok) {
+					var currentWindowIndex = -1;
+					for (var i = json.data.length - 1; i >= 0; i--) {
+						var item = json.data[i];
+						if (item.focus) {
+							gCurrentWindowIndex = i;
+							gWindowList = json.data;
+							onCurrentWindowIndexchanged();
+							break;
+						}
+					}
+				} else {
+					LT.e("post window_list.json fail.");
+				}
+
+				
+			});
+
+		} catch(e) {
+
+			console.error("ERROR : " + e);
+
+		}
+
+		</script>
 		<title>
 			Android YunicaTovah
 		</title>
@@ -84,7 +161,7 @@
 					<select id="window_select">
 						<option>com.UCMobile</option>
 						<option>com.UCMobile</option>
-						<option>com.UCMobile</option>
+						<option selected='true'>com.UCMobile3</option>
 						<option>com.UCMobile</option>
 						<option>com.UCMobile</option>
 					</select>
