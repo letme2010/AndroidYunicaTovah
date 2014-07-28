@@ -1,0 +1,45 @@
+{
+	ok: true,
+	data: {
+		ltrb: [0, 0, 320, 480],
+		class: "DecorView",
+		children: [
+			{
+				ltrb: [0, 0, 40, 40],
+				class: "ImageView",
+				children: null
+			},
+			{
+				ltrb: [40, 40, 40, 40],
+				class: "View",
+				children: null
+			},
+			{
+				ltrb: [80, 0, 200, 200],
+				class: "LinearLayout",
+				children: [
+					{
+						ltrb: [0, 0, 200, 50],
+						class: "View1",
+						children: null
+					},
+					{
+						ltrb: [0, 0, 200, 100],
+						class: "View22",
+						children: null
+					},
+					{
+						ltrb: [0, 0, 200, 150],
+						class: "View3",
+						children: null
+					},
+					{
+						ltrb: [0, 0, 200, 200],
+						class: "View4",
+						children: null
+					}
+				]
+			}
+		]
+	}
+}

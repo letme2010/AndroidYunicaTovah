@@ -1,10 +1,17 @@
 <html>
 	<head>
+		<script type="text/javascript" src="objDef.js"></script>
 		<script type="text/javascript" src="jquery.js"></script>
+		<link rel="stylesheet" href="style.min.css" />
+		<script src="jstree.min.js"></script>
 		<script type="text/javascript">
 
 		function getWindowSelect() {
 			return $('#window_select');
+		}
+
+		function getScreen() {
+			return $('#screen');
 		}
 
 		try{
@@ -16,8 +23,16 @@
 				e: function(aObj) {
 					console.error(aObj);
 				},
-				request: function(aURL, aCallback) {
-					$.post(aURL, aCallback);
+				request: function(aRes, aCallback) {
+					var _sURL = "./mock_data/json/" + aRes;
+					$.post(_sURL, function(aData){
+
+						// LT.i("aData:" + aData);
+						var _oJson = eval("(" + aData + ")");
+						if (aCallback) {
+							aCallback(_oJson);
+						}
+					});
 				}
 			};
 
@@ -45,26 +60,24 @@
 					}
 					getWindowSelect().append(_qOption);
 				}
+
+				//TODO:request tree_view.json and update display
 			}
 
-			LT.request("./test/window_list.json", function(aData){
-
-				var json =  eval("(" + aData + ")");
-
-				LT.i("json:" + json.ok);
-				if (json.ok) {
+			LT.request("window_list.json", function(aJson){
+				if (aJson.ok) {
 					var currentWindowIndex = -1;
-					for (var i = json.data.length - 1; i >= 0; i--) {
-						var item = json.data[i];
+					for (var i = aJson.data.length - 1; i >= 0; i--) {
+						var item = aJson.data[i];
 						if (item.focus) {
 							gCurrentWindowIndex = i;
-							gWindowList = json.data;
+							gWindowList = aJson.data;
 							onCurrentWindowIndexchanged();
 							break;
 						}
 					}
 				} else {
-					LT.e("post window_list.json fail.");
+					LT.e("post window_list.aJson fail.");
 				}
 
 				
@@ -74,6 +87,33 @@
 
 			console.error("ERROR : " + e);
 
+		}
+
+		function convertViewTreeChildren2JsTreeChildren(aChildren) {
+			if (aChildren) {
+				var _aRet = [];
+				for (var i = 0, len = aChildren.length; i < len; i++) {
+					var _oChild = aChildren[i];
+					_aRet.push(convertViewTreeData2JsTreeData(_oChild));
+				}
+				return _aRet;
+			} else {
+				return null;
+			}
+		}
+
+		function convertViewTreeData2JsTreeData(aData) {
+			return {text: aData.class, children:convertViewTreeChildren2JsTreeChildren(aData.children)};
+		}
+
+		function createTree(aData) {
+			return convertViewTreeData2JsTreeData(aData);
+		}
+
+		function createTreeFormat(aData) {
+			var _oTree = createTree(aData);
+			var _sRootText = _oTree.text;
+			return new JsTreeNode(_sRootText, _oTree.children);
 		}
 
 		</script>
@@ -166,8 +206,23 @@
 						<option>com.UCMobile</option>
 					</select>
 					<div id="view_tree_contain">
-						<pre>root</pre>
-						<pre>|__FrameLayout</pre>
+						<div id="view_tree">
+						</div>
+						<script>
+
+						LT.request("view_tree.json", function(aJson){
+							// LT.i("view : " + aJson.ok);
+							if (aJson.ok) {
+
+								var data = createTreeFormat(aJson.data);
+								$('#view_tree').jstree({"core": {"data":data}});
+
+							} else {
+								LT.e("post view_tree.aJson fail.");
+							}
+						});
+
+						</script>
 					</div>
 				</div>
 				<div id="console_content_right"></div>
