@@ -103,7 +103,7 @@
 		}
 
 		function convertViewTreeData2JsTreeData(aData) {
-			return {text: aData.class, children:convertViewTreeChildren2JsTreeChildren(aData.children)};
+			return {text: aData.class, children:convertViewTreeChildren2JsTreeChildren(aData.children), state: { "opened" : true }};
 		}
 
 		function createTree(aData) {
@@ -111,9 +111,7 @@
 		}
 
 		function createTreeFormat(aData) {
-			var _oTree = createTree(aData);
-			var _sRootText = _oTree.text;
-			return new JsTreeNode(_sRootText, _oTree.children);
+			return createTree(aData);
 		}
 
 		</script>
@@ -187,6 +185,7 @@
 				height: 100%;
 				background-color: rgb(200,200,1);
 				list-style: none;
+				overflow: auto;
 			}
 
 		</style>
@@ -215,7 +214,14 @@
 							if (aJson.ok) {
 
 								var data = createTreeFormat(aJson.data);
-								$('#view_tree').jstree({"core": {"data":data}});
+								$('#view_tree').jstree(
+									{
+										plugins: ["wholerow"],
+										core: {"data":data}
+									}
+								);
+
+
 
 							} else {
 								LT.e("post view_tree.aJson fail.");
